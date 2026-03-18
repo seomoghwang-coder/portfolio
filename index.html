@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>황서목 | AI 크리에이터 & 커리어코치</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans KR', sans-serif; color: #1F2937; background: #fff; overflow-x: hidden; }
+
+        :root {
+            --grad1: #7C3AED;
+            --grad2: #EC4899;
+            --grad3: #F97316;
+            --primary: #7C3AED;
+            --text: #1F2937;
+            --light: #F8F7FF;
+            --border: #E5E7EB;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s;
+        }
+        nav.scrolled {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+        }
+        .nav-logo {
+            font-size: 1.2rem; font-weight: 900; text-decoration: none;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--grad1), var(--grad2)) !important;
+            color: white !important; padding: 0.5rem 1.3rem; border-radius: 50px;
+            font-weight: 700 !important; transition: all 0.2s !important;
+        }
+        .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* ─── HERO ─── */
+        #hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; padding: 6rem 2rem 4rem;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.25;
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb1 { width: 550px; height: 550px; background: radial-gradient(circle, #7C3AED, transparent); top: -120px; right: -120px; animation-delay: 0s; }
+        .orb2 { width: 450px; height: 450px; background: radial-gradient(circle, #EC4899, transparent); bottom: -120px; left: -120px; animation-delay: 3s; }
+        .orb3 { width: 300px; height: 300px; background: radial-gradient(circle, #F97316, transparent); top: 45%; left: 38%; animation-delay: 6s; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+
+        .hero-content {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 5rem;
+            max-width: 1100px; width: 100%;
+        }
+        .hero-photo {
+            flex-shrink: 0; width: 260px; height: 260px; border-radius: 50%;
+            border: 4px solid transparent;
+            background: linear-gradient(#1a1a3a, #1a1a3a) padding-box,
+                        linear-gradient(135deg, #7C3AED, #EC4899, #F97316) border-box;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .hero-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .hero-photo-init {
+            font-size: 5rem; font-weight: 900;
+            background: linear-gradient(135deg, #A78BFA, #F472B6, #FB923C);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-text { color: white; }
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(236,72,153,0.3));
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.4rem 1.1rem; border-radius: 50px; font-size: 0.85rem;
+            margin-bottom: 1.25rem; backdrop-filter: blur(5px);
+        }
+        .hero-name {
+            font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+            font-weight: 900; line-height: 1.1; margin-bottom: 0.5rem;
+        }
+        .hero-name-en {
+            background: linear-gradient(135deg, #A78BFA, #F472B6, #FB923C);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-sub { font-size: 1.1rem; color: rgba(255,255,255,0.75); margin-bottom: 1.5rem; font-weight: 300; }
+        .hero-quote {
+            font-size: 0.95rem; color: rgba(255,255,255,0.7); font-style: italic;
+            border-left: 3px solid #EC4899; padding-left: 1rem;
+            margin-bottom: 2rem; line-height: 1.8;
+        }
+        .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+        .hero-tag {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+            padding: 0.3rem 0.9rem; border-radius: 50px; font-size: 0.8rem;
+            backdrop-filter: blur(5px);
+        }
+        .hero-btns { display: flex; gap: 1rem; }
+        .btn-grad {
+            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            color: white; padding: 0.85rem 2rem; border-radius: 50px;
+            text-decoration: none; font-weight: 700; font-size: 0.95rem;
+            transition: all 0.3s; box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+        }
+        .btn-grad:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(124,58,237,0.5); }
+        .btn-outline {
+            background: transparent; color: white; padding: 0.85rem 2rem;
+            border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.95rem;
+            border: 2px solid rgba(255,255,255,0.35); transition: all 0.3s;
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+        /* ─── COMMON ─── */
+        section { padding: 5rem 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .stag {
+            display: inline-block; font-size: 0.78rem; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--primary); margin-bottom: 0.5rem;
+        }
+        .stitle {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 900; margin-bottom: 0.75rem; line-height: 1.2;
+        }
+        .sdesc { font-size: 0.97rem; color: #6B7280; max-width: 600px; line-height: 1.75; margin-bottom: 3rem; }
+        .gtext {
+            background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ─── ABOUT ─── */
+        #about { background: var(--light); }
+        .about-center { text-align: center; }
+        .about-center .sdesc { margin: 0 auto 3rem; }
+        .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .feat-card {
+            background: white; border-radius: 1.5rem; padding: 2.5rem 2rem;
+            text-align: center; border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .feat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .feat-card:nth-child(1)::before { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+        .feat-card:nth-child(2)::before { background: linear-gradient(90deg, #EC4899, #F9A8D4); }
+        .feat-card:nth-child(3)::before { background: linear-gradient(90deg, #F97316, #FED7AA); }
+        .feat-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+        .feat-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+        .feat-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+        .feat-desc { font-size: 0.88rem; color: #6B7280; line-height: 1.75; }
+
+        /* ─── SERVICES ─── */
+        #services { background: white; }
+        .svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
+        .svc-box {
+            background: var(--light); border-radius: 1.5rem;
+            padding: 2.5rem; border: 1px solid var(--border);
+        }
+        .svc-head { display: flex; align-items: center; gap: 0.75rem; font-size: 1.3rem; font-weight: 800; margin-bottom: 1.75rem; }
+        .svc-ico {
+            width: 46px; height: 46px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+        }
+        .ico-ai { background: linear-gradient(135deg, #EDE9FE, #DDD6FE); }
+        .ico-coach { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); }
+        .svc-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+        .svc-list li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.93rem; color: #374151; }
+        .svc-list li::before { content: '✦'; color: var(--primary); font-size: 0.7rem; flex-shrink: 0; }
+
+        /* ─── PROJECTS ─── */
+        #projects { background: var(--light); }
+        .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .proj-card {
+            background: white; border-radius: 1.5rem; overflow: hidden;
+            border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .proj-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .proj-thumb {
+            height: 170px; display: flex; align-items: center;
+            justify-content: center; font-size: 3rem;
+        }
+        .pt1 { background: linear-gradient(135deg, #EDE9FE, #A78BFA); }
+        .pt2 { background: linear-gradient(135deg, #FCE7F3, #F9A8D4); }
+        .pt3 { background: linear-gradient(135deg, #FEF3C7, #FCD34D); }
+        .proj-body { padding: 1.5rem; }
+        .proj-cat { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); margin-bottom: 0.4rem; }
+        .proj-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .proj-desc { font-size: 0.83rem; color: #6B7280; line-height: 1.65; margin-bottom: 1rem; }
+        .proj-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.85rem; font-weight: 700; color: var(--primary);
+            text-decoration: none; transition: gap 0.2s;
+        }
+        .proj-link:hover { gap: 0.75rem; }
+        .proj-soon { font-size: 0.82rem; color: #9CA3AF; font-style: italic; }
+
+        /* ─── TIMELINE ─── */
+        #timeline { background: white; }
+        .tl-wrap { position: relative; max-width: 820px; }
+        .tl-line {
+            position: absolute; left: 24px; top: 0; bottom: 0; width: 2px;
+            background: linear-gradient(to bottom, #7C3AED, #EC4899, #F97316, #F59E0B);
+        }
+        .tl-item { display: flex; gap: 2rem; padding-bottom: 2.5rem; position: relative; }
+        .tl-dot {
+            flex-shrink: 0; width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 0.72rem; color: white; position: relative; z-index: 1;
+        }
+        .d1 { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
+        .d2 { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
+        .d3 { background: linear-gradient(135deg, #EC4899, #F472B6); }
+        .d4 { background: linear-gradient(135deg, #F472B6, #FB923C); }
+        .d5 { background: linear-gradient(135deg, #F97316, #F59E0B); }
+        .d6 { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
+        .d7 { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
+        .d8 { background: linear-gradient(135deg, #EC4899, #F97316); }
+        .d9 { background: linear-gradient(135deg, #7C3AED, #F97316); }
+        .tl-body { flex: 1; padding: 0.4rem 0; }
+        .tl-year { font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; }
+        .tl-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.3rem; }
+        .tl-desc { font-size: 0.84rem; color: #6B7280; line-height: 1.65; }
+
+        /* ─── ACHIEVEMENTS ─── */
+        #achievements { background: var(--light); }
+        .ach-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+        .ach-head { display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; margin-bottom: 1.5rem; }
+        .ach-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+        .ach-item { display: flex; gap: 0.85rem; align-items: flex-start; }
+        .ach-yr {
+            flex-shrink: 0; font-size: 0.76rem; font-weight: 700; color: white;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            padding: 0.2rem 0.6rem; border-radius: 50px; margin-top: 0.1rem;
+        }
+        .ach-txt { font-size: 0.9rem; color: #374151; line-height: 1.55; }
+
+        /* ─── QUALIFICATIONS ─── */
+        #qualifications { background: white; }
+        .qual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+        .qual-tag {
+            background: linear-gradient(135deg, #F3F0FF, #FDF2F8);
+            border: 1px solid #E9D5FF; padding: 0.75rem 1rem; border-radius: 0.75rem;
+            font-size: 0.82rem; color: #5B21B6; font-weight: 500; text-align: center;
+            transition: all 0.2s;
+        }
+        .qual-tag { cursor: pointer; }
+        .qual-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,58,237,0.15); }
+        .qual-tag.has-img:hover { box-shadow: 0 4px 16px rgba(124,58,237,0.25); border-color: #A78BFA; }
+
+        /* ─── CERT MODAL ─── */
+        .cert-modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            align-items: center; justify-content: center; padding: 2rem;
+        }
+        .cert-modal-overlay.open { display: flex; animation: fadeOverlay 0.2s ease; }
+        @keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
+        .cert-modal {
+            background: white; border-radius: 1.5rem; padding: 2rem;
+            max-width: 560px; width: 100%;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .cert-modal-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .cert-modal-title { font-size: 1rem; font-weight: 800; color: #1F2937; }
+        .cert-modal-close {
+            width: 32px; height: 32px; border-radius: 50%; border: none;
+            background: #F3F4F6; cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .cert-modal-close:hover { background: #E5E7EB; }
+        .cert-modal-img-wrap {
+            border-radius: 1rem; overflow: hidden; background: #F9FAFB;
+            border: 1px solid #E5E7EB; min-height: 200px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cert-modal-img-wrap img { width: 100%; display: block; }
+        .cert-modal-placeholder {
+            text-align: center; padding: 3rem 2rem; color: #9CA3AF;
+        }
+        .cert-modal-placeholder p { font-size: 0.85rem; margin-top: 0.5rem; }
+
+        /* ─── CONTACT ─── */
+        #contact {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white;
+        }
+        #contact .stag { color: #A78BFA; }
+        #contact .stitle { color: white; }
+        #contact .sdesc { color: rgba(255,255,255,0.65); }
+        .contact-box {
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5rem;
+            padding: 3rem; display: flex; gap: 4rem; align-items: flex-start;
+        }
+        .contact-info { flex: 1; }
+        .ci-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+        .ci-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(236,72,153,0.4));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .ci-label { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem; }
+        .ci-val { font-size: 0.97rem; font-weight: 600; }
+        .ci-val a { color: white; text-decoration: none; }
+        .ci-val a:hover { color: #A78BFA; }
+        .contact-aside { flex-shrink: 0; }
+        .aside-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.85rem; }
+        .aside-placeholder {
+            display: inline-block; font-size: 0.82rem; color: rgba(255,255,255,0.4);
+            border: 1px dashed rgba(255,255,255,0.2);
+            padding: 0.55rem 1.1rem; border-radius: 0.6rem; margin-bottom: 0.5rem;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: #08080f; color: rgba(255,255,255,0.35);
+            text-align: center; padding: 2rem; font-size: 0.83rem;
+        }
+        footer strong {
+            background: linear-gradient(135deg, #A78BFA, #F472B6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ─── FADE-IN ANIMATION ─── */
+        .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .feat-grid { grid-template-columns: 1fr; }
+            .svc-grid { grid-template-columns: 1fr; }
+            .proj-grid { grid-template-columns: 1fr; }
+            .ach-grid { grid-template-columns: 1fr; }
+            .qual-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-box { flex-direction: column; gap: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .hero-content { flex-direction: column; text-align: center; gap: 2rem; }
+            .hero-photo { width: 200px; height: 200px; }
+            .hero-btns { justify-content: center; }
+            .hero-tags { justify-content: center; }
+            .hero-quote { text-align: left; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav id="navbar">
+    <a href="#hero" class="nav-logo">✦ 황서목</a>
+    <ul class="nav-links">
+        <li><a href="#about">소개</a></li>
+        <li><a href="#services">서비스</a></li>
+        <li><a href="#projects">프로젝트</a></li>
+        <li><a href="#timeline">경력</a></li>
+        <li><a href="#achievements">수상</a></li>
+        <li><a href="#contact" class="nav-cta">문의하기</a></li>
+    </ul>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <div class="hero-content">
+        <div class="hero-photo">
+            <!-- 프로필 사진: profile.jpg 파일을 이 폴더에 넣고 아래 주석을 해제하세요 -->
+            <!-- <img src="profile.jpg" alt="황서목 프로필 사진"> -->
+            <span class="hero-photo-init">황</span>
+        </div>
+        <div class="hero-text">
+            <div class="hero-badge">✦ AI 크리에이터 & 커리어코치</div>
+            <h1 class="hero-name">
+                황서목<br>
+                <span class="hero-name-en">Hwang SeoMok</span>
+            </h1>
+            <p class="hero-sub">정책학 박사 &nbsp;·&nbsp; (주)WOW 교육컨설팅 대표</p>
+            <blockquote class="hero-quote">
+                "기술은 붓이 되고, 마음은 그림이 됩니다.<br>
+                그리고, AI는 누구나 예술가가 될 수 있음을 증명합니다."
+            </blockquote>
+            <div class="hero-tags">
+                <span class="hero-tag">🤖 AI아트 크리에이터</span>
+                <span class="hero-tag">🎓 커리어코치</span>
+                <span class="hero-tag">📚 교육기획자</span>
+                <span class="hero-tag">✍️ 작가</span>
+            </div>
+            <div class="hero-btns">
+                <a href="#services" class="btn-grad">서비스 보기</a>
+                <a href="#contact" class="btn-outline">문의하기</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ ABOUT ════ -->
+<section id="about">
+    <div class="container">
+        <div class="about-center fade-in">
+            <span class="stag">ABOUT</span>
+            <h2 class="stitle">AI와 사람을 잇는 <span class="gtext">교육 전문가</span></h2>
+            <p class="sdesc">
+                교육컨설팅, 커리어코칭을 실천하며 지역 문화와 AI를 교육 현장에 연결하는 강사이자 교육기획자입니다.<br>
+                AI 기술과 인간의 감성이 만나는 지점을 탐구하며, 누구나 자신만의 표현을 찾을 수 있다고 믿습니다.
+            </p>
+        </div>
+        <div class="feat-grid">
+            <div class="feat-card fade-in">
+                <span class="feat-icon">🤖</span>
+                <h3 class="feat-title">AI 크리에이터</h3>
+                <p class="feat-desc">AI 기술로 웹앱·홍보영상·아트를 창작합니다. AICLab 책임연구원으로서 AI 콘텐츠 교육·연구를 선도합니다.</p>
+            </div>
+            <div class="feat-card fade-in">
+                <span class="feat-icon">🎓</span>
+                <h3 class="feat-title">교육 전문가</h3>
+                <p class="feat-desc">정책학 박사, 경영학 석사를 기반으로 디지털리터러시·AI활용·진로 교육을 20년 이상 현장에서 실천해왔습니다.</p>
+            </div>
+            <div class="feat-card fade-in">
+                <span class="feat-icon">🌟</span>
+                <h3 class="feat-title">커리어코치</h3>
+                <p class="feat-desc">KPC 코치(한국코치협회), 퍼실리테이터 CF로 진로·창업·취업·비즈니스 코칭을 통해 개인과 조직의 성장을 돕습니다.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ SERVICES ════ -->
+<section id="services">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">SERVICES</span>
+            <h2 class="stitle">제공하는 <span class="gtext">서비스</span></h2>
+            <p class="sdesc">AI 창작부터 커리어 코칭까지, 다양한 전문 서비스를 제공합니다.</p>
+        </div>
+        <div class="svc-grid fade-in">
+            <div class="svc-box">
+                <div class="svc-head">
+                    <div class="svc-ico ico-ai">🤖</div>
+                    AI 창작 서비스
+                </div>
+                <ul class="svc-list">
+                    <li>홍보용 웹앱 제작 (AI 활용)</li>
+                    <li>홍보 동영상 제작</li>
+                    <li>AI 아트 창작</li>
+                    <li>디지털리터러시 교육</li>
+                    <li>GPTs 콘텐츠 기획</li>
+                    <li>AI 활용 강의 설계 자동화</li>
+                </ul>
+            </div>
+            <div class="svc-box">
+                <div class="svc-head">
+                    <div class="svc-ico ico-coach">💡</div>
+                    코칭 서비스
+                </div>
+                <ul class="svc-list">
+                    <li>커리어코칭</li>
+                    <li>창업코칭</li>
+                    <li>취업코칭</li>
+                    <li>진로코칭</li>
+                    <li>비즈니스코칭</li>
+                    <li>학습코칭</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ PROJECTS ════ -->
+<section id="projects">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">PROJECTS</span>
+            <h2 class="stitle">주요 <span class="gtext">프로젝트</span></h2>
+            <p class="sdesc">AI를 활용해 직접 기획·제작한 작업물들입니다.</p>
+        </div>
+        <div class="proj-grid fade-in">
+            <div class="proj-card">
+                <div class="proj-thumb pt1">🖥️</div>
+                <div class="proj-body">
+                    <p class="proj-cat">웹앱 · AI 제작</p>
+                    <h3 class="proj-title">AI 강사 소개 랜딩페이지</h3>
+                    <p class="proj-desc">AI를 활용해 직접 기획·제작한 강의 홍보용 웹 애플리케이션. AI 교육 마스터클래스 소개 페이지.</p>
+                    <a href="https://260225lecture-intro.vercel.app/" target="_blank" class="proj-link">바로가기 →</a>
+                </div>
+            </div>
+            <div class="proj-card">
+                <div class="proj-thumb pt2">🏢</div>
+                <div class="proj-body">
+                    <p class="proj-cat">홈페이지 · AI 제작</p>
+                    <h3 class="proj-title">WOW 교육컨설팅 홈페이지</h3>
+                    <p class="proj-desc">(주)WOW 교육컨설팅 공식 홈페이지. AI를 활용하여 직접 기획·제작한 기업 웹사이트.</p>
+                    <a href="https://26wow-homepage.vercel.app/" target="_blank" class="proj-link">바로가기 →</a>
+                </div>
+            </div>
+            <div class="proj-card">
+                <div class="proj-thumb pt3">🎨</div>
+                <div class="proj-body">
+                    <p class="proj-cat">AI 아트 · 전시</p>
+                    <h3 class="proj-title">아트집 '공존'</h3>
+                    <p class="proj-desc">2026.03 5thCANVAS ART展 참가작. 돈화문갤러리 전시. "서로의 빛으로 완성된 이야기"</p>
+                    <!-- 포트폴리오 링크 준비 후 아래 주석을 해제하고 링크를 교체하세요 -->
+                    <!-- <a href="포트폴리오링크" target="_blank" class="proj-link">포트폴리오 보기 →</a> -->
+                    <span class="proj-soon">포트폴리오 링크 준비 중</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ TIMELINE ════ -->
+<section id="timeline">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">CAREER</span>
+            <h2 class="stitle">경력 <span class="gtext">타임라인</span></h2>
+            <p class="sdesc">20년 이상의 강의·코칭·교육기획 경력을 바탕으로 AI 크리에이터로 진화했습니다.</p>
+        </div>
+        <div class="tl-wrap fade-in">
+            <div class="tl-line"></div>
+
+            <div class="tl-item">
+                <div class="tl-dot d1">2026</div>
+                <div class="tl-body">
+                    <div class="tl-year">2026 · 현재</div>
+                    <div class="tl-title">AICLab 책임연구원 · KAEA 상임이사 · 커리어온뉴스 기자</div>
+                    <div class="tl-desc">AI콘텐츠융합연구소 책임연구원, 한국AI전문가교육협회 상임이사로 AI 교육 연구 활동. 아트전 '공존' 참가 (돈화문갤러리)</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d2">2025</div>
+                <div class="tl-body">
+                    <div class="tl-year">2025</div>
+                    <div class="tl-title">정책학 박사 취득 · AI 전문 자격 취득</div>
+                    <div class="tl-desc">부경대학교 과학기술정책학 박사 취득. 인공지능(AI) 활용 마스터 1급, AI콘텐츠전문가, GPTs콘텐츠기획전문가 취득. 동화책 『소미의 특별한 하루』 출판</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d3">2024</div>
+                <div class="tl-body">
+                    <div class="tl-year">2024 · 현재</div>
+                    <div class="tl-title">KBS 코칭전문가양성과정 교수</div>
+                    <div class="tl-desc">한국교원능력평가원 교육위원, 부산청소년자립지원관 외부코치, KBS 강사협의회 교수로 활동</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d4">2023</div>
+                <div class="tl-body">
+                    <div class="tl-year">2023 · 현재</div>
+                    <div class="tl-title">AI 아티스트 전문강사 · 경남여성가족재단 디지털리터러시 강사</div>
+                    <div class="tl-desc">AI 아티스트 전문강사 취득, 경남여성가족재단 위촉강사, 연제청년창업나래센터 센터장 역임</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d5">2021</div>
+                <div class="tl-body">
+                    <div class="tl-year">2021</div>
+                    <div class="tl-title">KPC 코치 취득 (한국코치협회)</div>
+                    <div class="tl-desc">한국코치협회 공인 코치 자격 취득. 진로·창업·커리어 코칭 전문가로 본격 활동 시작</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d6">2019</div>
+                <div class="tl-body">
+                    <div class="tl-year">2019 · 현재</div>
+                    <div class="tl-title">한국문화교육진흥원 원장</div>
+                    <div class="tl-desc">문화교육 기획 및 강의, 지역 국가문화유산 방문교육 기획·진행</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d7">2017</div>
+                <div class="tl-body">
+                    <div class="tl-year">2017</div>
+                    <div class="tl-title">퍼실리테이터 CF 취득 (한국퍼실리테이션협회)</div>
+                    <div class="tl-desc">인증퍼실리테이터(CF), 갈등조절 전문가 자격 취득</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d8">2011</div>
+                <div class="tl-body">
+                    <div class="tl-year">2011 · 현재</div>
+                    <div class="tl-title">(주)WOW 교육컨설팅 대표 설립</div>
+                    <div class="tl-desc">교육컨설팅 전문 법인 설립, 강의·기획·코칭 전문 기관으로 성장. 『창의로 접근하는 창업 프로젝트 실무』 출판</div>
+                </div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot d9">2002</div>
+                <div class="tl-body">
+                    <div class="tl-year">2000~2004</div>
+                    <div class="tl-title">동아대학교 경영학 석사 · 박사과정</div>
+                    <div class="tl-desc">서비스마케팅 전공 석사 취득, 한국마케팅저널 등 학술논문 다수 게재. 강의·연구 활동 시작</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ ACHIEVEMENTS ════ -->
+<section id="achievements">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">ACHIEVEMENTS</span>
+            <h2 class="stitle">수상 및 <span class="gtext">저서</span></h2>
+        </div>
+        <div class="ach-grid fade-in">
+            <div>
+                <div class="ach-head">🏆 수상 내역</div>
+                <ul class="ach-list">
+                    <li class="ach-item">
+                        <span class="ach-yr">2022</span>
+                        <span class="ach-txt">청렴공감 나누기 경연대회 <strong>대상</strong></span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2022</span>
+                        <span class="ach-txt">부산경상대학교 소상공인 디지털 특성화 대학 단체부분 <strong>1등상</strong></span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2021</span>
+                        <span class="ach-txt">한국여성과학기술인육성재단 지역인재육성 <strong>멘토상</strong></span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2017</span>
+                        <span class="ach-txt">수산해양학회 <strong>우수논문상</strong></span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2011</span>
+                        <span class="ach-txt">부산경상대학교 강의부문 <strong>우수 강사상</strong></span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2009</span>
+                        <span class="ach-txt">부경대학교 평생교육원 스피치대회 <strong>우수상</strong></span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div class="ach-head">📚 저서</div>
+                <ul class="ach-list">
+                    <li class="ach-item">
+                        <span class="ach-yr">2026</span>
+                        <span class="ach-txt">AI 아트집 <strong>'공존 - 서로의 빛으로 완성된 이야기'</strong> (5thCANVAS ART展)</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2025</span>
+                        <span class="ach-txt">『소미의 특별한 하루』 (유페이퍼)</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-yr">2011</span>
+                        <span class="ach-txt">『창의로 접근하는 창업 프로젝트 실무』 (부산경상대학교 출판부)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ QUALIFICATIONS ════ -->
+<section id="qualifications">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">QUALIFICATIONS</span>
+            <h2 class="stitle">주요 <span class="gtext">자격증</span></h2>
+            <p class="sdesc">AI·교육·코칭 분야의 전문 자격을 보유하고 있습니다.</p>
+        </div>
+        <div class="qual-grid fade-in">
+            <div class="qual-tag has-img" data-cert="cert/ai-master.jpg" data-name="인공지능(AI) 활용 마스터 1급">🤖 인공지능(AI) 활용 마스터 1급</div>
+            <div class="qual-tag has-img" data-cert="cert/ai-artist.jpg" data-name="AI 아티스트 전문강사">🎨 AI 아티스트 전문강사</div>
+            <div class="qual-tag has-img" data-cert="cert/ai-content.jpg" data-name="AI콘텐츠전문가">💡 AI콘텐츠전문가</div>
+            <div class="qual-tag has-img" data-cert="cert/gpts.jpg" data-name="GPTs콘텐츠기획전문가">📱 GPTs콘텐츠기획전문가</div>
+            <div class="qual-tag has-img" data-cert="cert/digital-literacy.jpg" data-name="디지털리터러시 강사">🌐 디지털리터러시 강사</div>
+            <div class="qual-tag has-img" data-cert="cert/sns-coach.jpg" data-name="SNS활용실무코치지도사">📲 SNS활용실무코치지도사</div>
+            <div class="qual-tag has-img" data-cert="cert/kpc-coach.jpg" data-name="KPC 코치 (한국코치협회)">🎯 KPC 코치 (한국코치협회)</div>
+            <div class="qual-tag has-img" data-cert="cert/facilitator.jpg" data-name="퍼실리테이터 CF">🔄 퍼실리테이터 CF</div>
+            <div class="qual-tag has-img" data-cert="cert/learning-strategist.jpg" data-name="학습전략설계사 1급">🎓 학습전략설계사 1급</div>
+            <div class="qual-tag has-img" data-cert="cert/startup-creator.jpg" data-name="스타트업크리에이터 1급">🚀 스타트업크리에이터 1급</div>
+            <div class="qual-tag has-img" data-cert="cert/kbs-trend.jpg" data-name="KBS 트렌드강사 1급">🎤 KBS 트렌드강사 1급</div>
+            <div class="qual-tag has-img" data-cert="cert/personal-color.jpg" data-name="퍼스널컬러전문가 1급">🌈 퍼스널컬러전문가 1급</div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ CONTACT ════ -->
+<section id="contact">
+    <div class="container">
+        <div class="fade-in">
+            <span class="stag">CONTACT</span>
+            <h2 class="stitle">함께 <span style="background:linear-gradient(135deg,#A78BFA,#F472B6,#FB923C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">시작해요</span></h2>
+            <p class="sdesc">강의, 코칭, 프로젝트 협업 등 모든 문의를 환영합니다.</p>
+        </div>
+        <div class="contact-box fade-in">
+            <div class="contact-info">
+                <div class="ci-item">
+                    <div class="ci-icon">📧</div>
+                    <div>
+                        <div class="ci-label">이메일</div>
+                        <div class="ci-val"><a href="mailto:fr3dom@naver.com">fr3dom@naver.com</a></div>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <div class="ci-icon">🏢</div>
+                    <div>
+                        <div class="ci-label">소속</div>
+                        <div class="ci-val">(주)WOW 교육컨설팅 대표</div>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <div class="ci-icon">📍</div>
+                    <div>
+                        <div class="ci-label">위치</div>
+                        <div class="ci-val">부산광역시 기장군</div>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-aside">
+                <div class="aside-title">SNS</div>
+                <div class="aside-placeholder">+ SNS 링크 추가 예정</div>
+                <br><br>
+                <div class="aside-title">포트폴리오</div>
+                <!-- 캔버스 포트폴리오 링크가 준비되면 아래 주석을 해제하고 링크를 교체하세요 -->
+                <!-- <a href="포트폴리오링크" target="_blank" style="color:#A78BFA; font-size:0.9rem; text-decoration:none;">포트폴리오 보기 →</a> -->
+                <div class="aside-placeholder">+ 포트폴리오 링크 추가 예정</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════ CERT MODAL ════ -->
+<div class="cert-modal-overlay" id="certModal">
+    <div class="cert-modal">
+        <div class="cert-modal-head">
+            <span class="cert-modal-title" id="certModalTitle"></span>
+            <button class="cert-modal-close" id="certModalClose">✕</button>
+        </div>
+        <div class="cert-modal-img-wrap" id="certModalBody"></div>
+    </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+    <p>© 2026 <strong>황서목 Hwang SeoMok</strong>. All rights reserved.</p>
+    <p style="margin-top:0.5rem;">AI 크리에이터 & 커리어코치 · fr3dom@naver.com</p>
+</footer>
+
+<script>
+    // Nav 스크롤 효과
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Fade-in 애니메이션
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // 자격증 모달
+    const modal = document.getElementById('certModal');
+    const modalTitle = document.getElementById('certModalTitle');
+    const modalBody = document.getElementById('certModalBody');
+
+    document.querySelectorAll('.qual-tag.has-img').forEach(tag => {
+        tag.addEventListener('click', () => {
+            const src = tag.dataset.cert;
+            const name = tag.dataset.name;
+            modalTitle.textContent = name;
+            modalBody.innerHTML = `<img src="${src}" alt="${name}"
+                onerror="this.parentElement.innerHTML='<div class=\\'cert-modal-placeholder\\'><div style=\\'font-size:3rem\\'>🖼️</div><p>자격증 사진을 준비 중입니다</p><p style=\\'font-size:0.78rem;margin-top:0.5rem;color:#C4B5FD\\''>cert/ 폴더에 <strong>${src.split('/')[1]}</strong> 파일을 넣어주세요</p></div>'"
+            >`;
+            modal.classList.add('open');
+        });
+    });
+
+    document.getElementById('certModalClose').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+</script>
+
+</body>
+</html>
